@@ -1,0 +1,500 @@
+
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizCraft — Платформа викторин</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .gradient-bg { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); }
+        .quiz-card:hover { transform: translateY(-5px); transition: all 0.3s ease; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-900">
+
+
+<!-- Навигация -->
+<nav class="sticky top-0 z-50 glass border-b border-slate-200 px-6 py-4">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <div class="flex items-center space-x-2 cursor-pointer" onclick="showView('home')">
+            <div class="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center text-white text-xl">
+                <i class="fas fa-bolt"></i>
+            </div>
+            <span class="text-2xl font-bold tracking-tight text-slate-800">Quiz<span class="text-indigo-600">Craft</span></span>
+        </div>
+        <div class="hidden md:flex space-x-8 font-medium">
+            <button onclick="showView('home')" class="hover:text-indigo-600 transition">Главная</button>
+            <button onclick="showView('create')" class="hover:text-indigo-600 transition">Создать викторину</button>
+            <button onclick="showView('join')" class="hover:text-indigo-600 transition">Присоединиться</button>
+        </div>
+        <div id="user-status" class="text-sm font-medium text-slate-500 bg-slate-100 px-4 py-2 rounded-full">
+            <i class="fas fa-user-circle mr-2"></i>Гость
+        </div>
+    </div>
+</nav>
+
+<!-- Главный контейнер -->
+<main class="max-w-5xl mx-auto px-6 py-12">
+
+    
+    <!-- Главный экран (Home) -->
+    <section id="view-home" class="view space-y-12">
+        <div class="text-center space-y-4">
+            <h1 class="text-5xl font-extrabold text-slate-900 tracking-tight">Создавайте и проводите <br><span class="text-indigo-600">интерактивные викторины</span></h1>
+            <p class="text-xl text-slate-500 max-w-2xl mx-auto">Простая платформа для обучения, тимбилдинга или просто веселья. Бесплатно и навсегда.</p>
+            <div class="flex justify-center space-x-4 pt-4">
+                <button onclick="showView('create')" class="px-8 py-4 gradient-bg text-white font-bold rounded-2xl shadow-lg shadow-indigo-200 hover:opacity-90 transition">
+                    Начать создание
+                </button>
+                <button onclick="showView('join')" class="px-8 py-4 bg-white border border-slate-200 text-slate-700 font-bold rounded-2xl hover:bg-slate-50 transition">
+                    Ввести код игры
+                </button>
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8 pt-8">
+            <div class="p-8 bg-white rounded-3xl border border-slate-100 shadow-sm quiz-card">
+                <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mb-6 text-xl">
+                    <i class="fas fa-magic"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Простой редактор</h3>
+                <p class="text-slate-500">Добавляйте вопросы и варианты ответов за считанные секунды.</p>
+            </div>
+            <div class="p-8 bg-white rounded-3xl border border-slate-100 shadow-sm quiz-card">
+                <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center mb-6 text-xl">
+                    <i class="fas fa-share-nodes"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Мгновенный доступ</h3>
+                <p class="text-slate-500">Поделитесь ссылкой или ID, и участники сразу смогут начать.</p>
+            </div>
+            <div class="p-8 bg-white rounded-3xl border border-slate-100 shadow-sm quiz-card">
+                <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mb-6 text-xl">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Результаты в реальном времени</h3>
+                <p class="text-slate-500">Отслеживайте прогресс и смотрите таблицу лидеров.</p>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Экран создания (Create) -->
+    <section id="view-create" class="view hidden space-y-8">
+        <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+            <h2 class="text-3xl font-bold mb-6">Новая викторина</h2>
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Название викторины</label>
+                    <input type="text" id="quiz-title" placeholder="Например: История Древнего Рима" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                
+                <div id="questions-container" class="space-y-8">
+                    <!-- Вопросы будут добавляться сюда -->
+                </div>
+
+                <button onclick="addQuestion()" class="w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl text-slate-500 font-medium hover:border-indigo-300 hover:text-indigo-600 transition flex items-center justify-center">
+                    <i class="fas fa-plus mr-2"></i> Добавить вопрос
+                </button>
+
+                <div class="pt-6 flex justify-end">
+                    <button onclick="saveQuiz()" id="btn-save-quiz" class="px-10 py-4 gradient-bg text-white font-bold rounded-2xl shadow-xl hover:opacity-90 transition">
+                        Опубликовать и получить ссылку
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Экран присоединения (Join) -->
+    <section id="view-join" class="view hidden text-center space-y-8 max-w-md mx-auto">
+        <div class="bg-white p-10 rounded-3xl border border-slate-200 shadow-xl">
+            <div class="w-20 h-20 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
+                <i class="fas fa-gamepad"></i>
+            </div>
+            <h2 class="text-3xl font-bold mb-2">Присоединиться</h2>
+            <p class="text-slate-500 mb-8">Введите ID викторины или полную ссылку для начала игры</p>
+            
+            <div class="space-y-4">
+                <input type="text" id="join-input" placeholder="Введите ID или ссылку" class="w-full px-4 py-4 text-center text-xl font-bold tracking-widest uppercase rounded-2xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <button onclick="handleJoin()" class="w-full py-4 gradient-bg text-white font-bold rounded-2xl shadow-lg hover:opacity-90 transition">
+                    Начать викторину
+                </button>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Экран прохождения (Play) -->
+    <section id="view-play" class="view hidden max-w-2xl mx-auto">
+        <div id="play-container" class="space-y-8">
+            <!-- Здесь будет рендериться текущий вопрос -->
+        </div>
+    </section>
+
+    <!-- Экран результатов (Results) -->
+    <section id="view-results" class="view hidden text-center space-y-8">
+        <div class="bg-white p-12 rounded-3xl border border-slate-200 shadow-xl">
+            <div id="result-icon" class="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">
+                <!-- Динамическая иконка -->
+            </div>
+            <h2 class="text-4xl font-extrabold mb-2" id="result-status">Отлично!</h2>
+            <p class="text-xl text-slate-500 mb-8" id="result-score">Вы ответили правильно на 0 из 0 вопросов</p>
+            <div class="flex justify-center space-x-4">
+                <button onclick="showView('home')" class="px-8 py-4 bg-slate-100 text-slate-700 font-bold rounded-2xl hover:bg-slate-200 transition">На главную</button>
+                <button onclick="location.reload()" class="px-8 py-4 gradient-bg text-white font-bold rounded-2xl shadow-lg hover:opacity-90 transition">Попробовать еще раз</button>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- Уведомления -->
+<div id="notification" class="fixed bottom-8 right-8 transform translate-y-24 opacity-0 transition-all duration-300 z-[100] bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3">
+    <span id="notification-msg">Сообщение</span>
+</div>
+
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // Конфигурация Firebase (Глобальные переменные из среды)
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'quizcraft-pro-777';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    let currentUser = null;
+    let currentQuiz = null;
+    let currentQuestionIndex = 0;
+    let userAnswers = [];
+
+    // --- Инициализация авторизации ---
+    async function initAuth() {
+        try {
+            await signInAnonymously(auth);
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    currentUser = user;
+                    document.getElementById('user-status').innerHTML = `<i class="fas fa-check-circle text-emerald-500 mr-2"></i>ID: ${user.uid.substring(0,6)}`;
+                }
+            });
+        } catch (error) {
+            console.error("Auth Error:", error);
+            notify("Ошибка подключения к серверу");
+        }
+    }
+
+    // --- Навигация ---
+    window.showView = (viewId) => {
+        document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+        document.getElementById(`view-${viewId}`).classList.remove('hidden');
+        window.scrollTo(0, 0);
+
+        // Если переходим к созданию и там пусто, добавим один вопрос
+        if (viewId === 'create' && document.getElementById('questions-container').children.length === 0) {
+            addQuestion();
+        }
+    };
+
+    // --- Работа с конструктором ---
+    let questionCount = 0;
+    window.addQuestion = () => {
+        questionCount++;
+        const container = document.getElementById('questions-container');
+        const qDiv = document.createElement('div');
+        qDiv.className = "p-6 bg-slate-50 rounded-2xl border border-slate-200 space-y-4 relative group animate-fade-in";
+        qDiv.id = `q-block-${questionCount}`;
+        qDiv.innerHTML = `
+            <button onclick="removeQuestion(${questionCount})" class="absolute top-4 right-4 text-slate-300 hover:text-red-500 transition">
+                <i class="fas fa-trash"></i>
+            </button>
+            <div class="flex items-center space-x-3 mb-2">
+                <span class="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold">${questionCount}</span>
+                <h4 class="font-bold text-slate-800">Вопрос</h4>
+            </div>
+            <input type="text" placeholder="Введите текст вопроса..." class="q-text w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+            
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="flex items-center space-x-2">
+                    <input type="radio" name="correct-${questionCount}" value="0" checked class="w-5 h-5 text-indigo-600">
+                    <input type="text" placeholder="Вариант 1" class="opt-0 w-full px-4 py-2 rounded-lg border border-slate-200 focus:outline-none bg-white">
+                </div>
+                <div class="flex items-center space-x-2">
+                    <input type="radio" name="correct-${questionCount}" value="1" class="w-5 h-5 text-indigo-600">
+                    <input type="text" placeholder="Вариант 2" class="opt-1 w-full px-4 py-2 rounded-lg border border-slate-200 focus:outline-none bg-white">
+                </div>
+                <div class="flex items-center space-x-2">
+                    <input type="radio" name="correct-${questionCount}" value="2" class="w-5 h-5 text-indigo-600">
+                    <input type="text" placeholder="Вариант 3" class="opt-2 w-full px-4 py-2 rounded-lg border border-slate-200 focus:outline-none bg-white">
+                </div>
+                <div class="flex items-center space-x-2">
+                    <input type="radio" name="correct-${questionCount}" value="3" class="w-5 h-5 text-indigo-600">
+                    <input type="text" placeholder="Вариант 4" class="opt-3 w-full px-4 py-2 rounded-lg border border-slate-200 focus:outline-none bg-white">
+                </div>
+            </div>
+        `;
+        container.appendChild(qDiv);
+    };
+
+    window.removeQuestion = (id) => {
+        const el = document.getElementById(`q-block-${id}`);
+        if (el) el.remove();
+    };
+
+
+    window.saveQuiz = async () => {
+        if (!currentUser) {
+            notify("Дождитесь авторизации...");
+            return;
+        }
+
+        const title = document.getElementById('quiz-title').value.trim();
+        if (!title) {
+            notify("Введите название викторины");
+            return;
+        }
+
+        const questionBlocks = document.querySelectorAll('[id^="q-block-"]');
+        const questions = [];
+
+        questionBlocks.forEach(block => {
+            const text = block.querySelector('.q-text').value.trim();
+            const options = [
+                block.querySelector('.opt-0').value.trim(),
+                block.querySelector('.opt-1').value.trim(),
+                block.querySelector('.opt-2').value.trim(),
+                block.querySelector('.opt-3').value.trim()
+            ];
+            const correctIndex = parseInt(block.querySelector(`input[type="radio"]:checked`).value);
+
+            if (text && options.every(o => o)) {
+                questions.push({ text, options, correctIndex });
+            }
+        });
+
+        if (questions.length === 0) {
+            notify("Добавьте хотя бы один заполненный вопрос");
+            return;
+        }
+
+        const btn = document.getElementById('btn-save-quiz');
+        btn.disabled = true;
+        btn.innerText = "Сохранение...";
+
+        try {
+            const quizData = {
+                title,
+                questions,
+                authorId: currentUser.uid,
+                createdAt: new Date().toISOString()
+            };
+
+            // ПУТЬ ПО ПРАВИЛУ 1: /artifacts/{appId}/public/data/quizzes
+            const quizRef = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'quizzes'), quizData);
+            
+            const shareUrl = `${window.location.origin}${window.location.pathname}?quizId=${quizRef.id}`;
+            
+            // Показываем результат
+            const container = document.getElementById('view-create');
+            container.innerHTML = `
+                <div class="bg-white p-12 rounded-3xl border border-slate-200 shadow-xl text-center space-y-6 animate-fade-in">
+                    <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold">Викторина создана!</h2>
+                    <p class="text-slate-500">Поделитесь этой ссылкой или ID с участниками:</p>
+                    
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex items-center justify-between">
+                        <code class="text-indigo-600 font-bold text-lg">${quizRef.id}</code>
+                        <button onclick="copyToClipboard('${quizRef.id}')" class="text-slate-400 hover:text-indigo-600 px-4 py-2">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+
+                    <div class="pt-6">
+                        <button onclick="location.reload()" class="w-full py-4 gradient-bg text-white font-bold rounded-2xl shadow-lg">Создать еще одну</button>
+                    </div>
+                </div>
+            `;
+            notify("Викторина успешно сохранена!");
+        } catch (error) {
+            console.error("Save Error:", error);
+            notify("Ошибка при сохранении");
+            btn.disabled = false;
+            btn.innerText = "Опубликовать и получить ссылку";
+        }
+    };
+
+
+    window.handleJoin = async () => {
+        const input = document.getElementById('join-input').value.trim();
+        if (!input) {
+            notify("Введите ID викторины");
+            return;
+        }
+
+        // Извлекаем ID если вставили полную ссылку
+        let quizId = input;
+        if (input.includes('quizId=')) {
+            quizId = input.split('quizId=')[1].split('&')[0];
+        }
+
+        startQuiz(quizId);
+    };
+
+    async function startQuiz(quizId) {
+        if (!currentUser) return;
+        
+        try {
+            notify("Загрузка викторины...");
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'quizzes', quizId);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                currentQuiz = docSnap.data();
+                currentQuestionIndex = 0;
+                userAnswers = [];
+                showView('play');
+                renderQuestion();
+            } else {
+                notify("Викторина не найдена");
+            }
+        } catch (error) {
+            console.error("Load Error:", error);
+            notify("Ошибка при загрузке");
+        }
+    }
+
+    function renderQuestion() {
+        const container = document.getElementById('play-container');
+        const question = currentQuiz.questions[currentQuestionIndex];
+        const progress = ((currentQuestionIndex + 1) / currentQuiz.questions.length) * 100;
+
+        container.innerHTML = `
+            <div class="space-y-6 animate-fade-in">
+                <div class="flex justify-between items-end">
+                    <div>
+                        <h4 class="text-indigo-600 font-bold uppercase tracking-wider text-sm mb-1">Вопрос ${currentQuestionIndex + 1} из ${currentQuiz.questions.length}</h4>
+                        <h2 class="text-2xl font-bold text-slate-800">${currentQuiz.title}</h2>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-slate-400 font-medium">${Math.round(progress)}%</span>
+                    </div>
+                </div>
+                
+                <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                    <div class="h-full gradient-bg transition-all duration-500" style="width: ${progress}%"></div>
+                </div>
+
+                <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                    <h3 class="text-2xl font-bold mb-8 text-slate-900">${question.text}</h3>
+                    <div class="grid gap-4">
+                        ${question.options.map((opt, i) => `
+                            <button onclick="submitAnswer(${i})" class="w-full text-left p-5 rounded-2xl border-2 border-slate-100 hover:border-indigo-500 hover:bg-indigo-50 transition-all flex items-center group">
+                                <span class="w-10 h-10 rounded-xl bg-slate-100 text-slate-500 font-bold flex items-center justify-center mr-4 group-hover:bg-indigo-600 group-hover:text-white transition">${i + 1}</span>
+                                <span class="text-lg font-medium text-slate-700">${opt}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    window.submitAnswer = (index) => {
+        userAnswers.push(index);
+        
+        if (currentQuestionIndex < currentQuiz.questions.length - 1) {
+            currentQuestionIndex++;
+            renderQuestion();
+        } else {
+            finishQuiz();
+        }
+    };
+
+    function finishQuiz() {
+        let correctCount = 0;
+        currentQuiz.questions.forEach((q, i) => {
+            if (q.correctIndex === userAnswers[i]) correctCount++;
+        });
+
+        const scorePercent = (correctCount / currentQuiz.questions.length) * 100;
+        
+        showView('results');
+        
+        const status = document.getElementById('result-status');
+        const scoreText = document.getElementById('result-score');
+        const icon = document.getElementById('result-icon');
+
+        scoreText.innerText = `Вы ответили правильно на ${correctCount} из ${currentQuiz.questions.length} вопросов`;
+
+        if (scorePercent === 100) {
+            status.innerText = "Идеально!";
+            icon.className = "w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl bg-emerald-100 text-emerald-600";
+            icon.innerHTML = '<i class="fas fa-trophy"></i>';
+        } else if (scorePercent >= 60) {
+            status.innerText = "Хороший результат!";
+            icon.className = "w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl bg-indigo-100 text-indigo-600";
+            icon.innerHTML = '<i class="fas fa-thumbs-up"></i>';
+        } else {
+            status.innerText = "Нужно потренироваться";
+            icon.className = "w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl bg-amber-100 text-amber-600";
+            icon.innerHTML = '<i class="fas fa-brain"></i>';
+        }
+    }
+
+    // --- Вспомогательные функции ---
+    window.notify = (msg) => {
+        const n = document.getElementById('notification');
+        document.getElementById('notification-msg').innerText = msg;
+        n.classList.remove('translate-y-24', 'opacity-0');
+        setTimeout(() => {
+            n.classList.add('translate-y-24', 'opacity-0');
+        }, 3000);
+    };
+
+    window.copyToClipboard = (text) => {
+        const el = document.createElement('textarea');
+        el.value = text;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        notify("Скопировано в буфер обмена!");
+    };
+
+    // Проверка URL на наличие ID викторины при загрузке
+    window.onload = async () => {
+        await initAuth();
+        const urlParams = new URLSearchParams(window.location.search);
+        const qId = urlParams.get('quizId');
+        if (qId) {
+            startQuiz(qId);
+        }
+    };
+
+</script>
+
+<style>
+    @keyframes fade-in {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+        animation: fade-in 0.4s ease-out forwards;
+    }
+</style>
+
+</body>
+</html>
