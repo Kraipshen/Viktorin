@@ -5,445 +5,285 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuizCraft — Платформа викторин</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body { font-family: 'Inter', sans-serif; }
         .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
         .gradient-bg { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); }
         .quiz-card:hover { transform: translateY(-5px); transition: all 0.3s ease; }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
-        
-        @keyframes fade-in {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in {
-            animation: fade-in 0.4s ease-out forwards;
-        }
+        @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fade-in 0.4s ease-out forwards; }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-900">
 
-<!-- Навигация -->
 <nav class="sticky top-0 z-50 glass border-b border-slate-200 px-6 py-4">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
-        <div class="flex items-center space-x-2 cursor-pointer" onclick="showView('home')">
-            <div class="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center text-white text-xl">
-                <i class="fas fa-bolt"></i>
-            </div>
-            <span class="text-2xl font-bold tracking-tight text-slate-800">Quiz<span class="text-indigo-600">Craft</span></span>
+        <div class="flex items-center space-x-2 cursor-pointer" onclick="window.showView('home')">
+            <div class="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center text-white"><i class="fas fa-bolt"></i></div>
+            <span class="text-2xl font-bold tracking-tight">Quiz<span class="text-indigo-600">Craft</span></span>
         </div>
         <div class="hidden md:flex space-x-8 font-medium">
-            <button onclick="showView('home')" class="hover:text-indigo-600 transition">Главная</button>
-            <button onclick="showView('create')" class="hover:text-indigo-600 transition">Создать викторину</button>
-            <button onclick="showView('join')" class="hover:text-indigo-600 transition">Присоединиться</button>
+            <button onclick="window.showView('home')" class="hover:text-indigo-600">Главная</button>
+            <button onclick="window.showView('create')" class="hover:text-indigo-600">Создать</button>
+            <button onclick="window.showView('join')" class="hover:text-indigo-600">Войти в игру</button>
         </div>
-        <div id="user-status" class="text-sm font-medium text-slate-500 bg-slate-100 px-4 py-2 rounded-full">
-            <i class="fas fa-circle-notch fa-spin mr-2"></i>Загрузка...
-        </div>
+        <div id="user-status" class="text-xs font-medium text-slate-500 bg-slate-100 px-3 py-1 rounded-full">Подключение...</div>
     </div>
 </nav>
 
-<!-- Главный контейнер -->
 <main class="max-w-5xl mx-auto px-6 py-12">
-    
-    <!-- Главный экран (Home) -->
+    <!-- Главная -->
     <section id="view-home" class="view space-y-12">
-        <div class="text-center space-y-4">
-            <h1 class="text-5xl font-extrabold text-slate-900 tracking-tight">Создавайте и проводите <br><span class="text-indigo-600">интерактивные викторины</span></h1>
-            <p class="text-xl text-slate-500 max-w-2xl mx-auto">Простая платформа для обучения, тимбилдинга или просто веселья. Бесплатно и навсегда.</p>
-            <div class="flex justify-center space-x-4 pt-4">
-                <button onclick="showView('create')" class="px-8 py-4 gradient-bg text-white font-bold rounded-2xl shadow-lg shadow-indigo-200 hover:opacity-90 transition">
-                    Начать создание
-                </button>
-                <button onclick="showView('join')" class="px-8 py-4 bg-white border border-slate-200 text-slate-700 font-bold rounded-2xl hover:bg-slate-50 transition">
-                    Ввести код игры
-                </button>
-            </div>
-        </div>
-
-        <div class="grid md:grid-cols-3 gap-8 pt-8">
-            <div class="p-8 bg-white rounded-3xl border border-slate-100 shadow-sm quiz-card">
-                <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mb-6 text-xl">
-                    <i class="fas fa-magic"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-2">Простой редактор</h3>
-                <p class="text-slate-500">Добавляйте вопросы и варианты ответов за считанные секунды.</p>
-            </div>
-            <div class="p-8 bg-white rounded-3xl border border-slate-100 shadow-sm quiz-card">
-                <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center mb-6 text-xl">
-                    <i class="fas fa-share-nodes"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-2">Мгновенный доступ</h3>
-                <p class="text-slate-500">Поделитесь ссылкой или ID, и участники сразу смогут начать.</p>
-            </div>
-            <div class="p-8 bg-white rounded-3xl border border-slate-100 shadow-sm quiz-card">
-                <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mb-6 text-xl">
-                    <i class="fas fa-chart-pie"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-2">Результаты в реальном времени</h3>
-                <p class="text-slate-500">Отслеживайте прогресс и смотрите таблицу лидеров.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Экран создания (Create) -->
-    <section id="view-create" class="view hidden space-y-8">
-        <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
-            <h2 class="text-3xl font-bold mb-6">Новая викторина</h2>
-            <div class="space-y-6">
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-2">Название викторины</label>
-                    <input type="text" id="quiz-title" placeholder="Например: История Древнего Рима" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                </div>
-                
-                <div id="questions-container" class="space-y-8">
-                    <!-- Вопросы будут добавляться сюда -->
-                </div>
-
-                <button onclick="addQuestion()" class="w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl text-slate-500 font-medium hover:border-indigo-300 hover:text-indigo-600 transition flex items-center justify-center">
-                    <i class="fas fa-plus mr-2"></i> Добавить вопрос
-                </button>
-
-                <div class="pt-6 flex justify-end">
-                    <button onclick="saveQuiz()" id="btn-save-quiz" class="px-10 py-4 gradient-bg text-white font-bold rounded-2xl shadow-xl hover:opacity-90 transition">
-                        Опубликовать и получить ссылку
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Экран присоединения (Join) -->
-    <section id="view-join" class="view hidden text-center space-y-8 max-w-md mx-auto">
-        <div class="bg-white p-10 rounded-3xl border border-slate-200 shadow-xl">
-            <div class="w-20 h-20 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
-                <i class="fas fa-gamepad"></i>
-            </div>
-            <h2 class="text-3xl font-bold mb-2">Присоединиться</h2>
-            <p class="text-slate-500 mb-8">Введите ID викторины или полную ссылку для начала игры</p>
-            
-            <div class="space-y-4">
-                <input type="text" id="join-input" placeholder="Введите ID или ссылку" class="w-full px-4 py-4 text-center text-xl font-bold tracking-widest uppercase rounded-2xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                <button onclick="handleJoin()" class="w-full py-4 gradient-bg text-white font-bold rounded-2xl shadow-lg hover:opacity-90 transition">
-                    Начать викторину
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Экран прохождения (Play) -->
-    <section id="view-play" class="view hidden max-w-2xl mx-auto">
-        <div id="play-container" class="space-y-8">
-            <!-- Здесь будет рендериться текущий вопрос -->
-        </div>
-    </section>
-
-    <!-- Экран результатов (Results) -->
-    <section id="view-results" class="view hidden text-center space-y-8">
-        <div class="bg-white p-12 rounded-3xl border border-slate-200 shadow-xl">
-            <div id="result-icon" class="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">
-                <!-- Динамическая иконка -->
-            </div>
-            <h2 class="text-4xl font-extrabold mb-2" id="result-status">Отлично!</h2>
-            <p class="text-xl text-slate-500 mb-8" id="result-score">Вы ответили правильно на 0 из 0 вопросов</p>
+        <div class="text-center space-y-6">
+            <h1 class="text-5xl font-extrabold tracking-tight">Интерактивные викторины <br><span class="text-indigo-600">для каждого</span></h1>
+            <p class="text-slate-500 text-lg">Создавайте тесты и делитесь ими мгновенно.</p>
             <div class="flex justify-center space-x-4">
-                <button onclick="showView('home')" class="px-8 py-4 bg-slate-100 text-slate-700 font-bold rounded-2xl hover:bg-slate-200 transition">На главную</button>
-                <button onclick="location.reload()" class="px-8 py-4 gradient-bg text-white font-bold rounded-2xl shadow-lg hover:opacity-90 transition">Попробовать еще раз</button>
+                <button onclick="window.showView('create')" class="px-8 py-4 gradient-bg text-white font-bold rounded-2xl shadow-lg">Создать викторину</button>
+                <button onclick="window.showView('join')" class="px-8 py-4 bg-white border border-slate-200 font-bold rounded-2xl">Ввести код</button>
+            </div>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8 pt-10">
+            <div class="p-8 bg-white rounded-3xl border border-slate-100 shadow-sm text-center">
+                <i class="fas fa-rocket text-indigo-500 text-3xl mb-4"></i>
+                <h3 class="font-bold">Быстрый запуск</h3>
+            </div>
+            <div class="p-8 bg-white rounded-3xl border border-slate-100 shadow-sm text-center">
+                <i class="fas fa-link text-purple-500 text-3xl mb-4"></i>
+                <h3 class="font-bold">Удобные ссылки</h3>
+            </div>
+            <div class="p-8 bg-white rounded-3xl border border-slate-100 shadow-sm text-center">
+                <i class="fas fa-cloud text-emerald-500 text-3xl mb-4"></i>
+                <h3 class="font-bold">Облачное хранение</h3>
             </div>
         </div>
     </section>
+
+    <!-- Создание -->
+    <section id="view-create" class="view hidden animate-fade-in">
+        <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+            <h2 class="text-2xl font-bold">Новая викторина</h2>
+            <input type="text" id="quiz-title" placeholder="Введите название (напр. География)" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none">
+            <div id="questions-container" class="space-y-6"></div>
+            <button onclick="window.addQuestion()" class="w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl text-slate-400 hover:text-indigo-600 transition">+ Добавить вопрос</button>
+            <button onclick="window.saveQuiz()" id="btn-save" class="w-full py-4 gradient-bg text-white font-bold rounded-2xl shadow-xl hover:opacity-90 transition">Опубликовать</button>
+        </div>
+    </section>
+
+    <!-- Присоединение -->
+    <section id="view-join" class="view hidden animate-fade-in max-w-md mx-auto text-center space-y-6">
+        <div class="bg-white p-10 rounded-3xl border border-slate-200 shadow-xl">
+            <h2 class="text-2xl font-bold mb-6">Присоединиться</h2>
+            <input type="text" id="join-input" placeholder="Введите ID игры или ссылку" class="w-full px-4 py-4 text-center text-xl font-bold uppercase rounded-2xl border border-slate-200 mb-4 focus:ring-2 focus:ring-indigo-500 outline-none">
+            <button onclick="window.handleJoin()" class="w-full py-4 gradient-bg text-white font-bold rounded-2xl shadow-lg">Начать игру</button>
+        </div>
+    </section>
+
+    <!-- Игра -->
+    <section id="view-play" class="view hidden max-w-2xl mx-auto"></section>
+
+    <!-- Результат -->
+    <section id="view-results" class="view hidden text-center animate-fade-in"></section>
 </main>
 
-<!-- Уведомления -->
-<div id="notification" class="fixed bottom-8 right-8 transform translate-y-24 opacity-0 transition-all duration-300 z-[100] bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3">
-    <span id="notification-msg">Сообщение</span>
+<div id="notification" class="fixed bottom-8 right-8 transform translate-y-24 opacity-0 transition-all duration-300 z-50 bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl">
+    <span id="notification-msg"></span>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    // Настройка Firebase
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'quizcraft-default-id';
-    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-        apiKey: "", // На GitHub Pages ключ будет вставлен автоматически средой исполнения, если вы используете интеграцию
-        authDomain: `${appId}.firebaseapp.com`,
-        projectId: appId,
-        storageBucket: `${appId}.firebasestorage.app`,
-        messagingSenderId: "",
-        appId: ""
+    // ТВОЙ КОНФИГ ИЗ FIREBASE
+    const firebaseConfig = {
+        apiKey: "AIzaSyBh_5XMtBMz5cTdCSLFbmywV0TOSKXTWYc",
+        authDomain: "vikyorina.firebaseapp.com",
+        projectId: "vikyorina",
+        storageBucket: "vikyorina.firebasestorage.app",
+        messagingSenderId: "465481199981",
+        appId: "1:465481199981:web:68233b69a4ea1e29066a64",
+        measurementId: "G-RQPP73LCJD"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
+    const appId = "viktorina_app"; // Уникальный префикс для коллекции
+    let db, auth, currentUser = null;
 
-    let currentUser = null;
-    let currentQuiz = null;
-    let currentQuestionIndex = 0;
-    let userAnswers = [];
-    let questionCount = 0;
+    try {
+        const app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        auth = getAuth(app);
+        signInAnonymously(auth);
+        onAuthStateChanged(auth, u => {
+            currentUser = u;
+            document.getElementById('user-status').innerHTML = u ? `<i class="fas fa-check-circle text-emerald-500 mr-1"></i> Соединение активно` : "Ошибка входа";
+        });
+    } catch(e) {
+        document.getElementById('user-status').innerText = "Ошибка Firebase";
+    }
 
-    // --- Экспорт функций в глобальную область для onclick ---
-    
-    window.showView = (viewId) => {
+    let qCount = 0;
+
+    window.showView = (id) => {
         document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
-        document.getElementById(`view-${viewId}`).classList.remove('hidden');
+        document.getElementById('view-'+id)?.classList.remove('hidden');
         window.scrollTo(0, 0);
-
-        if (viewId === 'create' && document.getElementById('questions-container').children.length === 0) {
-            window.addQuestion();
-        }
+        if(id === 'create' && qCount === 0) window.addQuestion();
     };
 
     window.addQuestion = () => {
-        questionCount++;
-        const container = document.getElementById('questions-container');
-        const qDiv = document.createElement('div');
-        qDiv.className = "p-6 bg-slate-50 rounded-2xl border border-slate-200 space-y-4 relative group animate-fade-in";
-        qDiv.id = `q-block-${questionCount}`;
-        qDiv.innerHTML = `
-            <button onclick="removeQuestion(${questionCount})" class="absolute top-4 right-4 text-slate-300 hover:text-red-500 transition">
-                <i class="fas fa-trash"></i>
-            </button>
-            <div class="flex items-center space-x-3 mb-2">
-                <span class="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold">${questionCount}</span>
-                <h4 class="font-bold text-slate-800">Вопрос</h4>
+        qCount++;
+        const div = document.createElement('div');
+        div.className = "p-6 bg-slate-50 rounded-2xl border border-slate-200 space-y-4 relative animate-fade-in";
+        div.id = `q-${qCount}`;
+        div.innerHTML = `
+            <div class="flex justify-between items-center">
+                <span class="font-bold text-indigo-600">Вопрос #${qCount}</span>
+                <button onclick="document.getElementById('q-${qCount}').remove()" class="text-slate-300 hover:text-red-500"><i class="fas fa-times"></i></button>
             </div>
-            <input type="text" placeholder="Введите текст вопроса..." class="q-text w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
-            
-            <div class="grid md:grid-cols-2 gap-4">
-                ${[0, 1, 2, 3].map(i => `
-                    <div class="flex items-center space-x-2">
-                        <input type="radio" name="correct-${questionCount}" value="${i}" ${i === 0 ? 'checked' : ''} class="w-5 h-5 text-indigo-600">
-                        <input type="text" placeholder="Вариант ${i + 1}" class="opt-${i} w-full px-4 py-2 rounded-lg border border-slate-200 focus:outline-none bg-white">
-                    </div>
-                `).join('')}
+            <input type="text" placeholder="Текст вопроса" class="q-txt w-full px-4 py-2 rounded-lg border focus:border-indigo-500 outline-none">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                ${[0,1,2,3].map(i => `<input type="text" placeholder="Вариант ${i+1}" class="opt-${i} w-full px-3 py-2 rounded-lg border text-sm">`).join('')}
             </div>
+            <select class="q-correct w-full px-3 py-2 rounded-lg border text-sm bg-white">
+                <option value="0">Правильный ответ: 1</option>
+                <option value="1">Правильный ответ: 2</option>
+                <option value="2">Правильный ответ: 3</option>
+                <option value="3">Правильный ответ: 4</option>
+            </select>
         `;
-        container.appendChild(qDiv);
-    };
-
-    window.removeQuestion = (id) => {
-        const el = document.getElementById(`q-block-${id}`);
-        if (el) el.remove();
+        document.getElementById('questions-container').appendChild(div);
     };
 
     window.saveQuiz = async () => {
-        if (!currentUser) {
-            notify("Авторизация не завершена...");
-            return;
-        }
-
+        if(!db) return window.notify("Сначала настройте Firebase!");
         const title = document.getElementById('quiz-title').value.trim();
-        if (!title) {
-            notify("Введите название викторины");
-            return;
-        }
-
-        const questionBlocks = document.querySelectorAll('[id^="q-block-"]');
+        const blocks = document.querySelectorAll('[id^="q-"]');
         const questions = [];
-
-        questionBlocks.forEach(block => {
-            const text = block.querySelector('.q-text').value.trim();
-            const options = [
-                block.querySelector('.opt-0').value.trim(),
-                block.querySelector('.opt-1').value.trim(),
-                block.querySelector('.opt-2').value.trim(),
-                block.querySelector('.opt-3').value.trim()
-            ];
-            const correctIndex = parseInt(block.querySelector(`input[type="radio"]:checked`).value);
-
-            if (text && options.every(o => o)) {
-                questions.push({ text, options, correctIndex });
-            }
+        
+        blocks.forEach(b => {
+            const text = b.querySelector('.q-txt').value.trim();
+            const options = [0,1,2,3].map(i => b.querySelector('.opt-'+i).value.trim());
+            const correct = parseInt(b.querySelector('.q-correct').value);
+            if(text && options.every(o => o)) questions.push({text, options, correctIndex: correct});
         });
 
-        if (questions.length === 0) {
-            notify("Добавьте вопросы с вариантами ответов");
-            return;
-        }
+        if(!title || !questions.length) return window.notify("Заполните все поля и варианты");
 
-        const btn = document.getElementById('btn-save-quiz');
-        btn.disabled = true;
-        btn.innerText = "Сохранение...";
+        const btn = document.getElementById('btn-save');
+        btn.disabled = true; btn.innerText = "Публикация...";
 
         try {
-            const quizData = {
-                title,
-                questions,
-                authorId: currentUser.uid,
-                createdAt: new Date().toISOString()
-            };
+            const path = `artifacts/${appId}/public/data/quizzes`;
+            const ref = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'quizzes'), {
+                title, questions, author: currentUser.uid, date: new Date().toISOString()
+            });
 
-            const quizRef = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'quizzes'), quizData);
-            
-            const shareUrl = `${window.location.origin}${window.location.pathname}?quizId=${quizRef.id}`;
-            
+            const fullUrl = window.location.origin + window.location.pathname + "?quizId=" + ref.id;
+
             document.getElementById('view-create').innerHTML = `
-                <div class="bg-white p-12 rounded-3xl border border-slate-200 shadow-xl text-center space-y-6 animate-fade-in">
-                    <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl">
+                <div class="text-center p-12 bg-white rounded-3xl border shadow-xl space-y-6 animate-fade-in">
+                    <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-2xl">
                         <i class="fas fa-check"></i>
                     </div>
-                    <h2 class="text-3xl font-bold">Готово!</h2>
-                    <p class="text-slate-500">ID викторины:</p>
-                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex items-center justify-between max-w-sm mx-auto">
-                        <code class="text-indigo-600 font-bold text-lg">${quizRef.id}</code>
-                        <button onclick="copyToClipboard('${quizRef.id}')" class="text-slate-400 hover:text-indigo-600 px-4 py-2">
-                            <i class="fas fa-copy"></i>
-                        </button>
+                    <h2 class="text-2xl font-bold">Викторина создана!</h2>
+                    <p class="text-slate-500">Поделитесь этим ID или ссылкой:</p>
+                    <div class="flex items-center space-x-2 bg-slate-50 p-4 rounded-xl border">
+                        <code class="flex-1 text-indigo-600 font-bold">${ref.id}</code>
+                        <button onclick="window.copyText('${ref.id}')" class="text-slate-400 hover:text-indigo-600"><i class="fas fa-copy"></i></button>
                     </div>
-                    <p class="text-slate-400 text-sm">Отправьте этот ID друзьям в меню «Присоединиться»</p>
-                    <div class="pt-6">
-                        <button onclick="location.reload()" class="w-full py-4 gradient-bg text-white font-bold rounded-2xl shadow-lg">На главную</button>
-                    </div>
+                    <button onclick="window.copyText('${fullUrl}')" class="w-full py-3 bg-indigo-50 text-indigo-600 rounded-xl font-bold">Копировать полную ссылку</button>
+                    <button onclick="location.reload()" class="w-full py-3 gradient-bg text-white rounded-xl font-bold shadow-lg">Вернуться на главную</button>
                 </div>
             `;
-            notify("Викторина опубликована!");
-        } catch (error) {
-            console.error("Save Error:", error);
-            notify("Ошибка базы данных");
-            btn.disabled = false;
-            btn.innerText = "Опубликовать";
+            window.notify("Успешно сохранено!");
+        } catch(e) { 
+            console.error(e);
+            window.notify("Ошибка доступа к БД. Проверьте Rules в Firebase!"); 
+            btn.disabled = false; 
+            btn.innerText = "Опубликовать"; 
         }
     };
 
     window.handleJoin = () => {
         const input = document.getElementById('join-input').value.trim();
-        if (!input) return notify("Введите код");
-
-        let quizId = input;
-        if (input.includes('quizId=')) {
-            quizId = input.split('quizId=')[1].split('&')[0];
-        }
-        window.startQuiz(quizId);
+        if(!input) return;
+        let id = input;
+        if(input.includes('quizId=')) id = input.split('quizId=')[1].split('&')[0];
+        window.startQuiz(id);
     };
 
-    window.startQuiz = async (quizId) => {
+    window.startQuiz = async (id) => {
         try {
-            notify("Загрузка...");
-            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'quizzes', quizId);
-            const docSnap = await getDoc(docRef);
-
-            if (docSnap.exists()) {
-                currentQuiz = docSnap.data();
-                currentQuestionIndex = 0;
-                userAnswers = [];
+            window.notify("Загрузка...");
+            const snap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'quizzes', id));
+            if(!snap.exists()) return window.notify("Викторина не найдена");
+            
+            const quiz = snap.data();
+            let idx = 0, score = 0;
+            
+            const render = () => {
+                const q = quiz.questions[idx];
+                const cont = document.getElementById('view-play');
                 window.showView('play');
-                renderQuestion();
-            } else {
-                notify("Викторина не найдена");
-            }
-        } catch (e) {
-            notify("Ошибка доступа");
-        }
+                cont.innerHTML = `
+                    <div class="space-y-6 animate-fade-in">
+                        <div class="flex justify-between items-center text-sm font-bold text-slate-400">
+                            <span>ВОПРОС ${idx + 1} ИЗ ${quiz.questions.length}</span>
+                            <span>СЧЕТ: ${score}</span>
+                        </div>
+                        <div class="bg-white p-8 rounded-3xl border shadow-sm space-y-8">
+                            <h3 class="text-2xl font-bold text-slate-800">${q.text}</h3>
+                            <div class="grid gap-3">
+                                ${q.options.map((o, i) => `<button onclick="window.ans(${i})" class="w-full text-left p-5 border-2 border-slate-50 rounded-2xl hover:border-indigo-500 hover:bg-indigo-50 transition font-medium">${o}</button>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                window.ans = (i) => {
+                    if(i === q.correctIndex) score++;
+                    idx++;
+                    if(idx < quiz.questions.length) render();
+                    else finish();
+                };
+            };
+
+            const finish = () => {
+                window.showView('results');
+                document.getElementById('view-results').innerHTML = `
+                    <div class="bg-white p-12 rounded-3xl border shadow-xl space-y-6">
+                        <h2 class="text-3xl font-bold">Результаты</h2>
+                        <div class="text-6xl font-black text-indigo-600">${score} / ${quiz.questions.length}</div>
+                        <p class="text-slate-500">${score === quiz.questions.length ? 'Идеально!' : 'Хорошая попытка!'}</p>
+                        <button onclick="location.reload()" class="w-full py-4 gradient-bg text-white rounded-2xl font-bold shadow-lg">На главную</button>
+                    </div>
+                `;
+            };
+
+            render();
+        } catch(e) { window.notify("Ошибка загрузки данных"); }
     };
 
-    function renderQuestion() {
-        const container = document.getElementById('play-container');
-        const q = currentQuiz.questions[currentQuestionIndex];
-        const progress = ((currentQuestionIndex + 1) / currentQuiz.questions.length) * 100;
-
-        container.innerHTML = `
-            <div class="space-y-6 animate-fade-in">
-                <div class="flex justify-between items-end">
-                    <div>
-                        <h4 class="text-indigo-600 font-bold text-sm mb-1 uppercase">${currentQuestionIndex + 1} ИЗ ${currentQuiz.questions.length}</h4>
-                        <h2 class="text-2xl font-bold text-slate-800">${currentQuiz.title}</h2>
-                    </div>
-                </div>
-                <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-                    <div class="h-full gradient-bg transition-all duration-500" style="width: ${progress}%"></div>
-                </div>
-                <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
-                    <h3 class="text-2xl font-bold mb-8">${q.text}</h3>
-                    <div class="grid gap-4">
-                        ${q.options.map((opt, i) => `
-                            <button onclick="submitAnswer(${i})" class="w-full text-left p-5 rounded-2xl border-2 border-slate-100 hover:border-indigo-500 hover:bg-indigo-50 transition flex items-center group">
-                                <span class="w-10 h-10 rounded-xl bg-slate-100 text-slate-500 font-bold flex items-center justify-center mr-4 group-hover:bg-indigo-600 group-hover:text-white transition">${i + 1}</span>
-                                <span class="text-lg font-medium">${opt}</span>
-                            </button>
-                        `).join('')}
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    window.submitAnswer = (idx) => {
-        userAnswers.push(idx);
-        if (currentQuestionIndex < currentQuiz.questions.length - 1) {
-            currentQuestionIndex++;
-            renderQuestion();
-        } else {
-            showResults();
-        }
-    };
-
-    function showResults() {
-        let correct = 0;
-        currentQuiz.questions.forEach((q, i) => { if (q.correctIndex === userAnswers[i]) correct++; });
-        const percent = (correct / currentQuiz.questions.length) * 100;
-
-        window.showView('results');
-        document.getElementById('result-score').innerText = `Результат: ${correct} из ${currentQuiz.questions.length}`;
-        const status = document.getElementById('result-status');
-        const icon = document.getElementById('result-icon');
-
-        if (percent >= 80) {
-            status.innerText = "Превосходно!";
-            icon.className = "w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 bg-emerald-100 text-emerald-600";
-            icon.innerHTML = '<i class="fas fa-award"></i>';
-        } else {
-            status.innerText = "Хорошая работа!";
-            icon.className = "w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 bg-indigo-100 text-indigo-600";
-            icon.innerHTML = '<i class="fas fa-check"></i>';
-        }
-    }
-
-    window.copyToClipboard = (text) => {
+    window.copyText = (t) => {
         const el = document.createElement('textarea');
-        el.value = text;
+        el.value = t;
         document.body.appendChild(el);
         el.select();
         document.execCommand('copy');
         document.body.removeChild(el);
-        notify("ID скопирован!");
+        window.notify("Скопировано!");
     };
 
-    window.notify = (msg) => {
+    window.notify = (m) => {
         const n = document.getElementById('notification');
-        document.getElementById('notification-msg').innerText = msg;
+        document.getElementById('notification-msg').innerText = m;
         n.classList.remove('translate-y-24', 'opacity-0');
         setTimeout(() => n.classList.add('translate-y-24', 'opacity-0'), 3000);
     };
 
-    // --- Инициализация ---
-    async function init() {
-        try {
-            await signInAnonymously(auth);
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    currentUser = user;
-                    document.getElementById('user-status').innerHTML = `<i class="fas fa-user-check text-emerald-500 mr-2"></i>Online`;
-                }
-            });
-            
-            const params = new URLSearchParams(window.location.search);
-            const qId = params.get('quizId');
-            if (qId) window.startQuiz(qId);
-            
-        } catch (e) {
-            console.error(e);
-            document.getElementById('user-status').innerHTML = `<i class="fas fa-exclamation-triangle text-red-500 mr-2"></i>Ошибка`;
-        }
-    }
-
-    init();
+    const params = new URLSearchParams(window.location.search);
+    if(params.get('quizId')) window.startQuiz(params.get('quizId'));
 </script>
 </body>
 </html>
