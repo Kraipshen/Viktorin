@@ -25,78 +25,77 @@
             <span class="text-2xl font-bold tracking-tight">Quiz<span class="text-indigo-600">Craft</span></span>
         </div>
         <div class="hidden md:flex space-x-8 font-medium">
-            <button onclick="window.showView('home')" class="hover:text-indigo-600">Главная</button>
-            <button onclick="window.showView('create')" class="hover:text-indigo-600">Создать</button>
-            <button onclick="window.showView('join')" class="hover:text-indigo-600">Войти в игру</button>
+            <button onclick="window.showView('home')" class="hover:text-indigo-600 transition">Главная</button>
+            <button onclick="window.showView('create')" class="hover:text-indigo-600 transition">Создать</button>
+            <button onclick="window.showView('join')" class="hover:text-indigo-600 transition">Войти по коду</button>
         </div>
-        <div id="user-status" class="text-xs font-medium text-slate-500 bg-slate-100 px-3 py-1 rounded-full">Подключение...</div>
+        <div id="user-status" class="text-xs font-medium text-slate-500 bg-slate-100 px-3 py-1 rounded-full">Загрузка...</div>
     </div>
 </nav>
 
 <main class="max-w-5xl mx-auto px-6 py-12">
-    <!-- Главная -->
+    <!-- Главная страница -->
     <section id="view-home" class="view space-y-12">
         <div class="text-center space-y-6">
-            <h1 class="text-5xl font-extrabold tracking-tight">Интерактивные викторины <br><span class="text-indigo-600">для каждого</span></h1>
-            <p class="text-slate-500 text-lg">Создавайте тесты и делитесь ими мгновенно.</p>
+            <h1 class="text-5xl font-extrabold tracking-tight">Создавайте и делитесь <br><span class="text-indigo-600">викторинами</span></h1>
             <div class="flex justify-center space-x-4">
-                <button onclick="window.showView('create')" class="px-8 py-4 gradient-bg text-white font-bold rounded-2xl shadow-lg">Создать викторину</button>
-                <button onclick="window.showView('join')" class="px-8 py-4 bg-white border border-slate-200 font-bold rounded-2xl">Ввести код</button>
+                <button onclick="window.showView('create')" class="px-8 py-4 gradient-bg text-white font-bold rounded-2xl shadow-lg hover:opacity-90 transition">Новая викторина</button>
+                <button onclick="window.showView('join')" class="px-8 py-4 bg-white border border-slate-200 font-bold rounded-2xl hover:bg-slate-50 transition">Ввести код</button>
             </div>
         </div>
-        <div class="grid md:grid-cols-3 gap-8 pt-10">
-            <div class="p-8 bg-white rounded-3xl border border-slate-100 shadow-sm text-center">
-                <i class="fas fa-rocket text-indigo-500 text-3xl mb-4"></i>
-                <h3 class="font-bold">Быстрый запуск</h3>
+
+        <!-- Раздел "Мои викторины" -->
+        <div class="space-y-6">
+            <div class="flex items-center justify-between">
+                <h2 class="text-2xl font-bold text-slate-800">Мои работы</h2>
+                <button onclick="window.loadMyQuizzes()" class="text-indigo-600 text-sm font-semibold hover:underline">Обновить список</button>
             </div>
-            <div class="p-8 bg-white rounded-3xl border border-slate-100 shadow-sm text-center">
-                <i class="fas fa-link text-purple-500 text-3xl mb-4"></i>
-                <h3 class="font-bold">Удобные ссылки</h3>
-            </div>
-            <div class="p-8 bg-white rounded-3xl border border-slate-100 shadow-sm text-center">
-                <i class="fas fa-cloud text-emerald-500 text-3xl mb-4"></i>
-                <h3 class="font-bold">Облачное хранение</h3>
+            <div id="my-quizzes-list" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Сюда будут подгружаться карточки -->
+                <div class="col-span-full py-12 text-center border-2 border-dashed border-slate-200 rounded-3xl text-slate-400">
+                    <i class="fas fa-folder-open mb-3 text-3xl"></i>
+                    <p>Здесь появятся ваши созданные викторины</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Создание -->
+    <!-- Экран создания -->
     <section id="view-create" class="view hidden animate-fade-in">
         <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
-            <h2 class="text-2xl font-bold">Новая викторина</h2>
-            <input type="text" id="quiz-title" placeholder="Введите название (напр. География)" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none">
+            <h2 class="text-2xl font-bold">Конструктор игры</h2>
+            <input type="text" id="quiz-title" placeholder="Название вашей викторины" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none">
             <div id="questions-container" class="space-y-6"></div>
-            <button onclick="window.addQuestion()" class="w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl text-slate-400 hover:text-indigo-600 transition">+ Добавить вопрос</button>
+            <button onclick="window.addQuestion()" class="w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl text-slate-400 hover:text-indigo-600 transition">+ Добавить еще вопрос</button>
             <button onclick="window.saveQuiz()" id="btn-save" class="w-full py-4 gradient-bg text-white font-bold rounded-2xl shadow-xl hover:opacity-90 transition">Опубликовать</button>
         </div>
     </section>
 
-    <!-- Присоединение -->
+    <!-- Вход по коду -->
     <section id="view-join" class="view hidden animate-fade-in max-w-md mx-auto text-center space-y-6">
         <div class="bg-white p-10 rounded-3xl border border-slate-200 shadow-xl">
-            <h2 class="text-2xl font-bold mb-6">Присоединиться</h2>
-            <input type="text" id="join-input" placeholder="Введите ID игры или ссылку" class="w-full px-4 py-4 text-center text-xl font-bold uppercase rounded-2xl border border-slate-200 mb-4 focus:ring-2 focus:ring-indigo-500 outline-none">
+            <h2 class="text-2xl font-bold mb-6">Введите код</h2>
+            <input type="text" id="join-input" placeholder="Код или ссылка" class="w-full px-4 py-4 text-center text-xl font-bold uppercase rounded-2xl border border-slate-200 mb-4 focus:ring-2 focus:ring-indigo-500 outline-none">
             <button onclick="window.handleJoin()" class="w-full py-4 gradient-bg text-white font-bold rounded-2xl shadow-lg">Начать игру</button>
         </div>
     </section>
 
-    <!-- Игра -->
+    <!-- Экран игры -->
     <section id="view-play" class="view hidden max-w-2xl mx-auto"></section>
 
-    <!-- Результат -->
+    <!-- Результаты -->
     <section id="view-results" class="view hidden text-center animate-fade-in"></section>
 </main>
 
-<div id="notification" class="fixed bottom-8 right-8 transform translate-y-24 opacity-0 transition-all duration-300 z-50 bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl">
+<div id="notification" class="fixed bottom-8 right-8 transform translate-y-24 opacity-0 transition-all duration-300 z-[100] bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3">
     <span id="notification-msg"></span>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, getDocs, collection, query, where, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    // ТВОЙ КОНФИГ ИЗ FIREBASE
     const firebaseConfig = {
         apiKey: "AIzaSyBh_5XMtBMz5cTdCSLFbmywV0TOSKXTWYc",
         authDomain: "vikyorina.firebaseapp.com",
@@ -107,20 +106,26 @@
         measurementId: "G-RQPP73LCJD"
     };
 
-    const appId = "viktorina_app"; // Уникальный префикс для коллекции
+    const appId = "viktorina_app";
     let db, auth, currentUser = null;
 
+    // Инициализация
     try {
         const app = initializeApp(firebaseConfig);
         db = getFirestore(app);
         auth = getAuth(app);
-        signInAnonymously(auth);
+        
         onAuthStateChanged(auth, u => {
-            currentUser = u;
-            document.getElementById('user-status').innerHTML = u ? `<i class="fas fa-check-circle text-emerald-500 mr-1"></i> Соединение активно` : "Ошибка входа";
+            if (u) {
+                currentUser = u;
+                document.getElementById('user-status').innerHTML = `<i class="fas fa-check-circle text-emerald-500"></i> Online`;
+                window.loadMyQuizzes(); // Загружаем список при входе
+            } else {
+                signInAnonymously(auth);
+            }
         });
     } catch(e) {
-        document.getElementById('user-status').innerText = "Ошибка Firebase";
+        document.getElementById('user-status').innerText = "Ошибка БД";
     }
 
     let qCount = 0;
@@ -132,6 +137,44 @@
         if(id === 'create' && qCount === 0) window.addQuestion();
     };
 
+    // Загрузка моих викторин
+    window.loadMyQuizzes = async () => {
+        if (!currentUser || !db) return;
+        const listCont = document.getElementById('my-quizzes-list');
+        
+        try {
+            // ВАЖНО: Мы используем простой запрос без orderBy, чтобы не создавать индексы в Firebase
+            const q = query(collection(db, 'artifacts', appId, 'public', 'data', 'quizzes'), where("author", "==", currentUser.uid));
+            const querySnapshot = await getDocs(q);
+            
+            if (querySnapshot.empty) return;
+
+            listCont.innerHTML = "";
+            querySnapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                const id = docSnap.id;
+                const card = document.createElement('div');
+                card.className = "p-6 bg-white rounded-3xl border border-slate-200 shadow-sm quiz-card space-y-4 animate-fade-in";
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <h4 class="font-bold text-slate-800 line-clamp-1">${data.title || 'Без названия'}</h4>
+                        <span class="text-[10px] bg-indigo-50 text-indigo-600 px-2 py-1 rounded-md font-bold uppercase">ID: ${id.substring(0,5)}...</span>
+                    </div>
+                    <p class="text-xs text-slate-500">${data.questions?.length || 0} вопросов</p>
+                    <div class="flex gap-2 pt-2">
+                        <button onclick="window.startQuiz('${id}')" class="flex-1 py-2 bg-indigo-600 text-white text-xs font-bold rounded-xl">Играть</button>
+                        <button onclick="window.copyFullLink('${id}')" class="p-2 bg-slate-50 text-slate-400 hover:text-indigo-600 border border-slate-100 rounded-xl transition" title="Копировать ссылку">
+                            <i class="fas fa-link"></i>
+                        </button>
+                    </div>
+                `;
+                listCont.appendChild(card);
+            });
+        } catch (e) {
+            console.error("Error loading quizzes:", e);
+        }
+    };
+
     window.addQuestion = () => {
         qCount++;
         const div = document.createElement('div');
@@ -139,14 +182,14 @@
         div.id = `q-${qCount}`;
         div.innerHTML = `
             <div class="flex justify-between items-center">
-                <span class="font-bold text-indigo-600">Вопрос #${qCount}</span>
-                <button onclick="document.getElementById('q-${qCount}').remove()" class="text-slate-300 hover:text-red-500"><i class="fas fa-times"></i></button>
+                <span class="font-bold text-indigo-600 text-sm">Вопрос #${qCount}</span>
+                <button onclick="document.getElementById('q-${qCount}').remove()" class="text-slate-300 hover:text-red-500"><i class="fas fa-trash-can"></i></button>
             </div>
-            <input type="text" placeholder="Текст вопроса" class="q-txt w-full px-4 py-2 rounded-lg border focus:border-indigo-500 outline-none">
+            <input type="text" placeholder="Введите ваш вопрос..." class="q-txt w-full px-4 py-2 rounded-xl border focus:border-indigo-500 outline-none">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                ${[0,1,2,3].map(i => `<input type="text" placeholder="Вариант ${i+1}" class="opt-${i} w-full px-3 py-2 rounded-lg border text-sm">`).join('')}
+                ${[0,1,2,3].map(i => `<input type="text" placeholder="Ответ ${i+1}" class="opt-${i} w-full px-3 py-2 rounded-lg border text-sm focus:border-indigo-400 outline-none">`).join('')}
             </div>
-            <select class="q-correct w-full px-3 py-2 rounded-lg border text-sm bg-white">
+            <select class="q-correct w-full px-3 py-2 rounded-lg border text-sm bg-white outline-none focus:border-indigo-500">
                 <option value="0">Правильный ответ: 1</option>
                 <option value="1">Правильный ответ: 2</option>
                 <option value="2">Правильный ответ: 3</option>
@@ -157,7 +200,7 @@
     };
 
     window.saveQuiz = async () => {
-        if(!db) return window.notify("Сначала настройте Firebase!");
+        if(!db || !currentUser) return window.notify("Подключение...");
         const title = document.getElementById('quiz-title').value.trim();
         const blocks = document.querySelectorAll('[id^="q-"]');
         const questions = [];
@@ -169,13 +212,12 @@
             if(text && options.every(o => o)) questions.push({text, options, correctIndex: correct});
         });
 
-        if(!title || !questions.length) return window.notify("Заполните все поля и варианты");
+        if(!title || !questions.length) return window.notify("Заполните все поля!");
 
         const btn = document.getElementById('btn-save');
         btn.disabled = true; btn.innerText = "Публикация...";
 
         try {
-            const path = `artifacts/${appId}/public/data/quizzes`;
             const ref = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'quizzes'), {
                 title, questions, author: currentUser.uid, date: new Date().toISOString()
             });
@@ -184,25 +226,20 @@
 
             document.getElementById('view-create').innerHTML = `
                 <div class="text-center p-12 bg-white rounded-3xl border shadow-xl space-y-6 animate-fade-in">
-                    <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-2xl">
-                        <i class="fas fa-check"></i>
+                    <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-2xl"><i class="fas fa-check"></i></div>
+                    <h2 class="text-2xl font-bold">Опубликовано!</h2>
+                    <div class="bg-slate-50 p-4 rounded-2xl border text-center">
+                        <p class="text-[10px] text-slate-400 uppercase font-bold mb-1">Код для входа</p>
+                        <code class="text-xl text-indigo-600 font-black tracking-widest">${ref.id}</code>
                     </div>
-                    <h2 class="text-2xl font-bold">Викторина создана!</h2>
-                    <p class="text-slate-500">Поделитесь этим ID или ссылкой:</p>
-                    <div class="flex items-center space-x-2 bg-slate-50 p-4 rounded-xl border">
-                        <code class="flex-1 text-indigo-600 font-bold">${ref.id}</code>
-                        <button onclick="window.copyText('${ref.id}')" class="text-slate-400 hover:text-indigo-600"><i class="fas fa-copy"></i></button>
-                    </div>
-                    <button onclick="window.copyText('${fullUrl}')" class="w-full py-3 bg-indigo-50 text-indigo-600 rounded-xl font-bold">Копировать полную ссылку</button>
-                    <button onclick="location.reload()" class="w-full py-3 gradient-bg text-white rounded-xl font-bold shadow-lg">Вернуться на главную</button>
+                    <button onclick="window.copyText('${fullUrl}')" class="w-full py-4 gradient-bg text-white rounded-2xl font-bold shadow-lg">Копировать ссылку</button>
+                    <button onclick="location.reload()" class="w-full py-3 bg-slate-100 text-slate-600 rounded-2xl font-bold">На главную</button>
                 </div>
             `;
             window.notify("Успешно сохранено!");
         } catch(e) { 
-            console.error(e);
-            window.notify("Ошибка доступа к БД. Проверьте Rules в Firebase!"); 
-            btn.disabled = false; 
-            btn.innerText = "Опубликовать"; 
+            window.notify("Ошибка базы данных!"); 
+            btn.disabled = false; btn.innerText = "Опубликовать"; 
         }
     };
 
@@ -216,7 +253,7 @@
 
     window.startQuiz = async (id) => {
         try {
-            window.notify("Загрузка...");
+            window.notify("Загрузка викторины...");
             const snap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'quizzes', id));
             if(!snap.exists()) return window.notify("Викторина не найдена");
             
@@ -230,13 +267,13 @@
                 cont.innerHTML = `
                     <div class="space-y-6 animate-fade-in">
                         <div class="flex justify-between items-center text-sm font-bold text-slate-400">
-                            <span>ВОПРОС ${idx + 1} ИЗ ${quiz.questions.length}</span>
-                            <span>СЧЕТ: ${score}</span>
+                            <span>ВОПРОС ${idx + 1} / ${quiz.questions.length}</span>
+                            <span class="text-indigo-600">ОЧКИ: ${score}</span>
                         </div>
                         <div class="bg-white p-8 rounded-3xl border shadow-sm space-y-8">
-                            <h3 class="text-2xl font-bold text-slate-800">${q.text}</h3>
+                            <h3 class="text-2xl font-bold text-slate-800 leading-tight">${q.text}</h3>
                             <div class="grid gap-3">
-                                ${q.options.map((o, i) => `<button onclick="window.ans(${i})" class="w-full text-left p-5 border-2 border-slate-50 rounded-2xl hover:border-indigo-500 hover:bg-indigo-50 transition font-medium">${o}</button>`).join('')}
+                                ${q.options.map((o, i) => `<button onclick="window.ans(${i})" class="w-full text-left p-5 border-2 border-slate-100 rounded-2xl hover:border-indigo-500 hover:bg-indigo-50 transition font-medium text-slate-700">${o}</button>`).join('')}
                             </div>
                         </div>
                     </div>
@@ -253,16 +290,21 @@
                 window.showView('results');
                 document.getElementById('view-results').innerHTML = `
                     <div class="bg-white p-12 rounded-3xl border shadow-xl space-y-6">
-                        <h2 class="text-3xl font-bold">Результаты</h2>
-                        <div class="text-6xl font-black text-indigo-600">${score} / ${quiz.questions.length}</div>
-                        <p class="text-slate-500">${score === quiz.questions.length ? 'Идеально!' : 'Хорошая попытка!'}</p>
-                        <button onclick="location.reload()" class="w-full py-4 gradient-bg text-white rounded-2xl font-bold shadow-lg">На главную</button>
+                        <h2 class="text-3xl font-bold text-slate-800">Финиш!</h2>
+                        <div class="text-7xl font-black text-indigo-600">${score} <span class="text-2xl text-slate-300">/ ${quiz.questions.length}</span></div>
+                        <p class="text-slate-500">${score === quiz.questions.length ? 'Потрясающий результат!' : 'Хорошая работа!'}</p>
+                        <button onclick="location.reload()" class="w-full py-4 gradient-bg text-white rounded-2xl font-bold shadow-lg">В меню</button>
                     </div>
                 `;
             };
 
             render();
         } catch(e) { window.notify("Ошибка загрузки данных"); }
+    };
+
+    window.copyFullLink = (id) => {
+        const url = window.location.origin + window.location.pathname + "?quizId=" + id;
+        window.copyText(url);
     };
 
     window.copyText = (t) => {
@@ -272,7 +314,7 @@
         el.select();
         document.execCommand('copy');
         document.body.removeChild(el);
-        window.notify("Скопировано!");
+        window.notify("Ссылка скопирована!");
     };
 
     window.notify = (m) => {
@@ -282,8 +324,10 @@
         setTimeout(() => n.classList.add('translate-y-24', 'opacity-0'), 3000);
     };
 
+    // Авто-старт по ссылке
     const params = new URLSearchParams(window.location.search);
     if(params.get('quizId')) window.startQuiz(params.get('quizId'));
+
 </script>
 </body>
 </html>
